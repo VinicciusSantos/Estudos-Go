@@ -1,45 +1,60 @@
 package main
- 
+
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+    "net/http"
+
+    "github.com/gin-gonic/gin"
 )
 
-type album struct {
-	ID     string  `json:"id"`
-	Title  string  `json:"title"`
-	Artist string  `json:"artist"`
-	Price  float64 `json:"price"`
+// album represents data about a record album.
+type pessoa struct {
+    ID     string  `json:"id"`
+    Nome  string  `json:"nome"`
+    Id_Profissao string  `json:"profissao"`
 }
 
-var albums = []album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+type projeto struct {
+    ID     string  `json:"id"`
+    Nome  string  `json:"nome"`
+    Participantes []pessoa `json:"?????"`
 }
 
-func getAlbums(c *gin.Context) {
-    c.IndentedJSON(http.StatusOK, albums)
-}
-
-func postAlbums(c *gin.Context) {
-    var newAlbum album
-
-    // Call BindJSON to bind the received JSON to
-    // newAlbum.
-    if err := c.BindJSON(&newAlbum); err != nil {
-        return
-    }
-
-    // Add the new album to the slice.
-    albums = append(albums, newAlbum)
-    c.IndentedJSON(http.StatusCreated, newAlbum)
+// albums slice to seed record album data.
+var pessoas = []pessoa{
+    {ID: "1", Nome: "Bruno de Calcinha", Id_Profissao: "45"},
+    {ID: "2", Nome: "Pedro Pelado", Id_Profissao: "12"},
+    {ID: "3", Nome: "Caio de Sunga", Id_Profissao: "13"},
 }
 
 func main() {
-	router := gin.Default()
-    router.GET("/albums", getAlbums)
-	router.POST("/albums", postAlbums)
+    router := gin.Default()
+    router.GET("/pessoas", getPessoas)
 
+    router.POST("/pessoas", postPessoas)
     router.Run("localhost:8080")
+}
+
+// getAlbums responds with the list of all albums as JSON.
+func getPessoas(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, pessoas)
+}
+
+func postPessoas(c *gin.Context) {
+    var newAlbum pessoa
+
+    if err := c.BindJSON(&newAlbum); err != nil {
+        return
+    }
+    pessoas = append(pessoas, newAlbum)
+    c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+func postProjetos(c *gin.Context) {
+    var newAlbum pessoa
+
+    if err := c.BindJSON(&newAlbum); err != nil {
+        return
+    }
+    pessoas = append(pessoas, newAlbum)
+    c.IndentedJSON(http.StatusCreated, newAlbum)
 }
